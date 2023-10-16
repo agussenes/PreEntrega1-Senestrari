@@ -1,23 +1,37 @@
-
+import { useState, useEffect } from "react"
+import Info from "../productos.json"
+import CardProduct from "./CardProduct"
+import { useParams } from "react-router-dom"
 
 const ItemListContainer = (porps) => {
 
-    const nombre = "Checho"
-    const edad = 24
+    const [productos, setProductos] = useState([]) 
+    const category = useParams().id
+    console.log(category)
+
+
+
+    const pedirProductos = () =>{
+        return new Promise((resolve, reject)=>{
+            resolve(Info)
+        })
+    }
+
+    useEffect(()=>{
+        pedirProductos()
+            .then((res) => {
+                if (category){
+                    setProductos( res.filter((prod)=> prod.category === category))
+                }else{
+                    setProductos(res)
+                }
+            })
+    },[category])
 
     return (
         <>
         
-            <main className="main">
-              <h1><strong>Bienvenido a la mejor Tienda Online</strong></h1>
-              <p>Bienvenido {nombre}!</p>
-              <p>Tenes {edad} años!</p>
-              <div className="imagenConfg"><img  src="./src/imagenes/amazonfba.png" ></img></div>
-              <p><strong>{nombre}</strong>, aca vas a encontar toda la informacion sobre AmazonFBA y ademas encontraras productos de afiliados y en ofertas!</p>
-              
-              
-
-             </main>
+            <CardProduct   productos={productos} />
 
         </>
     )
