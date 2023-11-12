@@ -1,7 +1,8 @@
 import { Routes, Route } from "react-router-dom"
 import ItemListContainer from "./ItemListContainer"
 import ItemDetailContainer from "../pages/ItemDetailContainer"
-
+import Carrito from "../pages/Carrito"
+import Checkout from "../pages/Checkout"
 
 
 const Body = (props) => {
@@ -14,16 +15,15 @@ const Body = (props) => {
 
                 <Route path="/" element={<ItemListContainer/>} />
                 <Route path="/category/:id" element={<ItemListContainer/>} />
-                <Route path="/detalle/:id" element={<ItemDetailContainer/>} />
-                <Route path="/carrito" element={<p>Carrito</p>} />
-                
+                <Route path="/item/:id" element={<ItemDetailContainer/>} />
+                <Route path="/carrito" element={<Carrito/>} />
+                <Route path="/checkout" element={<Checkout/>} />
                 <Route path="*" element={<p>404 vuelva a intentar por favor</p>} />
                 
 
             </Routes>
          
-         {/* <ItemListContainer/> */}
-
+        
         </main>
         
     )

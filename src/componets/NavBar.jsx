@@ -1,13 +1,18 @@
 import CartWidGet from "./CartWidGet"
 import { Link, NavLink } from "react-router-dom"
-const NavBar = (props) => {
+import {contexto} from "../providers/CustomProvider"
+import {useContext} from "react"
 
+
+const NavBar = () => {
+
+    const valorDelContexto = useContext(contexto)
     
     return (
-        <>
+        
          <header className="header">
             <Link to="/">
-            <h1> <strong>Bienvenid@ a ChechMark  {props.nombre}</strong></h1>
+            <h1> <strong>Bienvenido a ChechMark</strong></h1>
             </Link>
          
             <nav className="navbar">
@@ -17,6 +22,7 @@ const NavBar = (props) => {
                 <NavLink to="/category/electronics">Electronicos</NavLink>
                 <NavLink to="/carrito">Carrito</NavLink>
                 <Link to="/carrito"><CartWidGet/></Link>
+               {valorDelContexto.cantidadTotal}
                
                 
                
@@ -25,7 +31,7 @@ const NavBar = (props) => {
           
         </header>
       
-        </>
+        
     )
        
 }

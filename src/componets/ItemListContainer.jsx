@@ -1,37 +1,37 @@
 import { useState, useEffect } from "react"
-import Info from "../productos.json"
-import CardProduct from "./CardProduct"
+import ItemList from "./ItemList"
 import { useParams } from "react-router-dom"
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebaseConfig"
 
-const ItemListContainer = (porps) => {
+const ItemListContainer = () => {
 
-    const [productos, setProductos] = useState([]) 
-    const category = useParams().id
-    console.log(category)
+    const [productos, setProductos] = useState([]);
 
+    const category = useParams().category;
 
+    useEffect(() => {
 
-    const pedirProductos = () =>{
-        return new Promise((resolve, reject)=>{
-            resolve(Info)
-        })
-    }
+      const productosRef = collection(db, "productos");
+      getDocs(productosRef)
+        .then((resp) => {
 
-    useEffect(()=>{
-        pedirProductos()
-            .then((res) => {
-                if (category){
-                    setProductos( res.filter((prod)=> prod.category === category))
-                }else{
-                    setProductos(res)
-                }
+          setProductos(
+            resp.docs.map((doc) => {
+              return { ...doc.data(), id: doc.id }
             })
-    },[category])
+          )
+        })
+        
+    }, [category])
+    
+
+   
 
     return (
         <>
         
-            <CardProduct   productos={productos} />
+            <ItemList   productos={productos} />
 
         </>
     )

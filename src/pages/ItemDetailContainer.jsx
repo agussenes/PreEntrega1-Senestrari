@@ -1,6 +1,10 @@
-import { Link, useNavigate, useParams, } from "react-router-dom"
-import productos from "../productos.json"
+import { useNavigate, useParams, } from "react-router-dom"
 import { useEffect, useState } from "react"
+import  ItemDetail from "../componets/ItemDetail"
+import { toast } from "sonner"
+import { app } from "../firebaseConfig"
+import { collection, doc, getDoc, getFirestore } from "firebase/firestore"
+
 
 
 function ItemDetailContainer() {
@@ -11,23 +15,31 @@ function ItemDetailContainer() {
     const navigate = useNavigate()
     const params = useParams()
 
+    
     useEffect(()=>{
        
-        setTimeout(() => {
-            setLoading(false)
-           
-            productos.forEach(producto=>{
-               
-                if(producto.id === parseInt(params.id)) {
-        
-                    setNotFound(false)
-                    setProducto(producto)
-                } 
+        const db = getFirestore(app)
+        const productosCollection = collection(db, "productos")
+        const docRef = doc(productosCollection,params.id)
+        const consulta = getDoc(docRef)
 
+        consulta
+            .then((resultado) =>{
+                const producto = resultado.data()
+                setProducto(producto)
+                setNotFound(false)
             })
-        }, 1000);
+            .catch((err)=>{
+                toast.error("Error al cargar el productos")
+            })
+            .finally(()=>{
+                setLoading(false)
+                toast.dismiss()
+            })
 
     },[])    
+
+  
 
 
     useEffect(()=>{
@@ -46,23 +58,8 @@ function ItemDetailContainer() {
     return (
         <div>
             
-            <article className="card">
-            <h1 className="card__title">{producto.title}</h1>
-            <img className="card__image" src={producto.image} alt={producto.title} />
-            <br></br>
-            <strong><h2>Precio: ${producto.price}</h2></strong>
-            <Link to={`/category/${producto.category}`}>
-               <h3>Categoria: {producto.category}</h3>
-            </Link>
-            
-            <button  className="btn" >Añadir al carrito</button>
-            <br></br>
-            <br></br>
+            <ItemDetail producto={producto} />
 
-            <Link to={`/`}>
-            <button className="btn2"> volver</button>
-            </Link>            
-            </article>
         </div>
     )
 }
